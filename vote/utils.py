@@ -8,7 +8,7 @@ GEO_API_URL = "https://maps.googleapis.com/maps/api/geocode/json?"
 GEO_API_KEY = os.environ.get('GEO_API_KEY', "")
 
 
-def get_geocode(address):
+def geocode(address):
     try:
         # convert address string to url safe characters
         safe_address = urllib.parse.quote_plus(address)
@@ -25,7 +25,7 @@ def get_geocode(address):
 
 def verify_address(address):
     if address:
-        geo_data = get_geocode(address)
+        geo_data = geocode(address)
         if geo_data.get('status', "UNKNOWN_ERROR") == "OK":
             return True
     return False
