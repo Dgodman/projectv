@@ -1,0 +1,30 @@
+MODELS
+
+UserInfo:
+	User 			(required)
+	First Name 		(required)
+	Last Name 		(required)
+	Mailing Address (required)
+	City			(required)
+	StateInfo		(required)
+	Zip				(required)
+	Party 			(required)
+	License/ID# 	(required if no SSN given)
+	SSN# 			(required if no ID given)
+	Registration# 	(optional)
+	Phone 			(optional)
+
+
+BoEInfo:
+	State
+	County
+	Mailing Address
+	Physical Address
+	Hours of operation
+	Phone#
+	Fax#
+
+	
+ElectionInfo:
+	Type
+	Date
