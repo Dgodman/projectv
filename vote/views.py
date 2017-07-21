@@ -1,3 +1,12 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+def index(request):
+    '''Home page of site'''
+
+    # render html
+    return render(
+        request,
+        'vote/index.html',
+        {},
+    )
