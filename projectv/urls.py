@@ -21,6 +21,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    #url(r'^$', RedirectView.as_view(url='/catalog/', permanent=True)),
+    url(r'^$', RedirectView.as_view(url='/vote/', permanent=True)),
+    url(r'^vote/', include('vote.urls')),
     url(r'^accounts/', include('allauth.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
