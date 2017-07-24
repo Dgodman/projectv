@@ -1,5 +1,35 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>This is the <strong>Home</strong> page</h1>
+<!-- Main jumbotron for marketing or call to action -->
+<div class="jumbotron">
+    <div class="container">
+        <h1>Home page!</h1>
+        <p>This is a template for a simple marketing or informational website.
+            It includes a large callout called a jumbotron and three supporting pieces of content.
+            Use it as a starting point to create something more unique.
+        </p>
+        <p><a class="btn btn-primary btn-lg" href="{% url 'about' %}" role="button">About &raquo;</a></p>
+    </div>
+</div>
+<!-- Example row of columns -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Column 1</h2>
+            <p>This is a column with random text that most people skip over.</p>
+            <p><a class="btn btn-default" href="#" role="button">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Column 2</h2>
+            <p>What's this? Another column of random text? Oh yeah!</p>
+            <p><a class="btn btn-default" href="#" role="button">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Column 3</h2>
+            <p>Everyone knows you gotta have at minimum three columns that nobody cares about to be a good website.</p>
+            <p><a class="btn btn-default" href="#" role="button">Learn more &raquo;</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}
