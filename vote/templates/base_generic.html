@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
-    {% load static %}
-    <title>{% block title %}Voila! Vanishing voting vexation to vivify the vox populi.{% endblock %}</title>
+    <title>{% block title %}Vanishing voting vexation to vivify the vox populi.{% endblock %}</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- custom styles -->
+    <link rel="stylesheet" href="{% static 'css/jumbotron.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"/>
 </head>
 <body>
     {% block navbar %}
-    <!-- Static navbar -->
-    <nav class="navbar navbar-default navbar-static-top">
+    <!-- fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -58,6 +59,16 @@
     {% block content %}
     {% endblock %}
     {% block footer %}
+        <div class="container">
+            <hr>
+            <footer>
+                <p>&copy; 2017 Your Company, Inc.</p>
+            </footer>
+        </div>
     {% endblock %}
+    <!-- Bootstrap core JavaScript placed at the end so pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="{% static 'js/ie10-viewport-bug-workaround' %}"></script>
 </body>
 </html>
