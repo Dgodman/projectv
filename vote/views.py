@@ -13,11 +13,22 @@ def index(request):
 
 
 def about(request):
-    '''Home page of site'''
+    '''About of site'''
 
     # render html
     return render(
         request,
         'vote/about.html',
         {'active_nav': 'about',},
+    )
+
+
+def start(request):
+    '''Test start forms'''
+
+    # render html
+    return render(
+        request,
+        'vote/start.html',
+        {'active_nav': 'start', },
     )
