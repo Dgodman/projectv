@@ -9,6 +9,7 @@ GEO_API_URL = "https://maps.googleapis.com/maps/api/geocode/json?"
 GEO_API_KEY = os.environ.get('GEO_API_KEY', "")
 
 
+# generic function to call geocode
 def _geocode(address):
     try:
         # convert address string to url safe characters
