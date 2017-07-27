@@ -1,0 +1,17 @@
+{% load account %}
+{% user_display user as user_display %}
+{% load i18n %}
+{% autoescape off %}
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}
+    Thank you for registering at {{ site_name }}!
+    Your account has been created but must be activated before you can use it.
+    To activate the account please click on the following link or copy-paste it into your browser:
+    {{ activate_url }}
+
+    If you did not register this account then you can safely ignore and delete this email as activation will expire in 3 days.
+{% endblocktrans %}
+{% endautoescape %}
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}
+    Thank you from {{ site_name }}!
+    {{ site_domain }}
+{% endblocktrans %}
