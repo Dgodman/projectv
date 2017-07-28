@@ -9,6 +9,7 @@ GEO_API_URL = "https://maps.googleapis.com/maps/api/geocode/json?"
 GEO_API_KEY = os.environ.get('GEO_API_KEY', "")
 
 
+# TESTING ONLY
 # generic function to call geocode
 def _geocode(address):
     try:
@@ -25,6 +26,7 @@ def _geocode(address):
         return None
 
 
+# TESTING ONLY
 def verify_address(address):
     if address:
         geo_data = _geocode(address)
@@ -39,16 +41,28 @@ class GeoCode:
         # get geocode data
         data = self.do_geo(address)
         # check returned data
-        self.status = data.get('status', "UNKNOWN_ERROR")
+        self.status = data.get('status', "GENERIC_ERROR")
+        print(self.status)
         if self.status == "OK":
             self.geo_data = data
             # filter results
             results = self.parse_results()
             if results:
-                # get address information
+                # create address components
                 self.address = results.get('formatted_address')
+                self.partial_match = results.get('partial_match')
+                self.street_number = ''
+                self.route = ''
+                self.town = ''
+                self.city = ''
+                self.state = ''
+                self.county = ''
+                self.neighborhood = ''
+                self.country = ''
+                self.zip = ''
                 # regular expression to remove "county" from results
                 re_county = re.compile('county', re.IGNORECASE)
+                # set address components
                 for address_component in results.get('address_components'):
                     type_list = address_component.get('types')
                     if len(type_list) > 0:
@@ -58,7 +72,7 @@ class GeoCode:
                             self.street_number = component_value
                         elif component_type == 'route':
                             self.route = component_value
-                        elif component_type == 'locality':
+                        elif component_type == 'locality' or component_type == 'postal_town':
                             self.town = component_value
                             self.city = component_value
                         elif component_type == 'administrative_area_level_1':
@@ -81,10 +95,28 @@ class GeoCode:
         else:
             return None
 
+    def valid_address(self):
+        if self.street_number and self.route and self.city and self.state and self.zip:
+            return True
+        else:
+            return False
+
+    def formatted_address(self):
+        if self.valid_address():
+            return "{0} {1}, {2}, {3} {4}".format(
+                self.street_number,
+                self.route,
+                self.city,
+                self.state,
+                self.zip
+            )
+        else:
+            return ""
+
     def get_all(self):
-        if self.status == "OK":
+        if self.status and self.status == "OK":
             return {
-                'address': self.address,
+                'formatted_address': self.address,
                 'street_number': self.street_number,
                 'route': self.route,
                 'city': self.city,
@@ -92,6 +124,8 @@ class GeoCode:
                 'zip': self.zip,
                 'country': self.country,
                 'county': self.county,
+                'neighborhood': self.neighborhood,
+                'partial_match': self.partial_match,
             }
 
     @staticmethod
