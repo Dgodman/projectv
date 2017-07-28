@@ -1,33 +1,32 @@
-{% extends "base_generic.html" %}
+{% extends "base_form.html" %}
 
+{% load crispy_forms_tags %}
 {% load i18n %}
 {% load account %}
 
 {% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>{% trans "Confirm E-mail Address" %}</h1>
-    {% if confirmation %}
-        {% user_display confirmation.email_address.user as user_display %}
-        <p>
-            {% blocktrans with confirmation.email_address.email as email %}
-                Click confirm to activate the account for <a href="mailto:{{ email }}">{{ email }}</a>.
-            {% endblocktrans %}
-        </p>
+<h1>{% trans "Confirm E-mail Address" %}</h1>
+{% if confirmation %}
+    {% user_display confirmation.email_address.user as user_display %}
+    <p>
+        {% blocktrans with confirmation.email_address.email as email %}
+            Click confirm to activate the account for <a href="mailto:{{ email }}">{{ email }}</a>.
+        {% endblocktrans %}
+    </p>
 
-        <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
-            {% csrf_token %}
-            <button type="submit">{% trans 'Confirm' %}</button>
-        </form>
-    {% else %}
-        {% url 'account_email' as email_url %}
-        <p>
-            {% blocktrans %}
-                This e-mail confirmation link has expired or is invalid.
-                <a href="{{ email_url }}">Click here</a> to issue a new confirmation code.
-            {% endblocktrans %}
-        </p>
-    {% endif %}
-</div>
+    <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+        {% csrf_token %}
+        <button type="submit">{% trans 'Confirm' %}</button>
+    </form>
+{% else %}
+    {% url 'account_email' as email_url %}
+    <p>
+        {% blocktrans %}
+            This e-mail confirmation link has expired or is invalid.
+            <a href="{{ email_url }}">Click here</a> to issue a new confirmation code.
+        {% endblocktrans %}
+    </p>
+{% endif %}
 {% endblock %}
