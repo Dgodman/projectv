@@ -69,7 +69,6 @@
     </nav>
     {% endblock %}
     <div class="container">
-        {% include "messages.html" %}
         {% block content %}
         {% endblock %}
     </div>
@@ -81,9 +80,59 @@
             </footer>
         </div>
     {% endblock %}
+    {% block messages_block %}
+        <div class="container" style="display:none;">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                    {{ message }}
+                    <!--<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>-->
+                </div>
+            {% endfor %}
+        </div>
+    {% endblock %}
     <!-- Bootstrap core JavaScript placed at the end so pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="{% static 'js/ie10-viewport-bug-workaround' %}"></script>
+    <script src="{% static 'js/notify.min.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+        $('.alert').each(function(i)
+        {
+            var alert_text = $(this).text();
+            if (alert_text != null && alert_text != '')
+            {
+                var alert_type = 'success'
+                if ($(this).hasClass('alert-success'))
+                {
+                    alert_type = 'success';
+                }
+                else if ($(this).hasClass('alert-info'))
+                {
+                    alert_type = 'info';
+                }
+                else if ($(this).hasClass('alert-warning'))
+                {
+                    alert_type = 'warn';
+                }
+                else if ($(this).hasClass('alert-danger'))
+                {
+                    alert_type = 'error';
+                }
+                $.notify(
+                    alert_text,
+                    {
+                        className: alert_type,
+                        globalPosition: 'bottom right',
+                    }
+                );
+            }
+        });
+    });
+    </script>
+    {% block javascript %}
+    {% endblock %}
 </body>
 </html>
