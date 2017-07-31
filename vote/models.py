@@ -69,7 +69,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(_('first name'), max_length=50)
     last_name = models.CharField(_('last name'), max_length=50)
     # postal information
-    home_address = models.ForeignKey('Address', )
+    home_address = models.ForeignKey('AddressShortForm', )
 
     def __str__(self):
         return self.user.email
