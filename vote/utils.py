@@ -7,10 +7,10 @@ import re
 
 GEO_API_URL = "https://maps.googleapis.com/maps/api/geocode/json?"
 GEO_API_KEY = os.environ.get('GEO_API_KEY', "")
+PO_REGEX = r"((^|[^A-Z]+)((P[. ]*O[. ]*(B((O?X)|IN)?)?)|(P(OST(AL)?)?[. ]*((OFF(ICE)?)|(B((O?X)|IN)))))[^A-Z])"
 
 
 # TESTING ONLY
-# generic function to call geocode
 def _geocode(address):
     try:
         # convert address string to url safe characters
@@ -35,6 +35,16 @@ def verify_address(address):
     return False
 
 
+# TESTING ONLY
+def is_pobox(address):
+    re_pobox = re.compile(PO_REGEX, re.IGNORECASE)
+    matches = re_pobox.search(address)
+    if matches:
+        return True
+    else:
+        return False
+
+
 class GeoCode:
 
     def __init__(self, address):
@@ -42,7 +52,6 @@ class GeoCode:
         data = self.do_geo(address)
         # check returned data
         self.status = data.get('status', "GENERIC_ERROR")
-        print(self.status)
         if self.status == "OK":
             self.geo_data = data
             # filter results
@@ -60,6 +69,7 @@ class GeoCode:
                 self.neighborhood = ''
                 self.country = ''
                 self.zip = ''
+                self.is_po = self.is_pobox(address)
                 # regular expression to remove "county" from results
                 re_county = re.compile('county', re.IGNORECASE)
                 # set address components
@@ -78,6 +88,7 @@ class GeoCode:
                         elif component_type == 'administrative_area_level_1':
                             self.state = component_value
                         elif component_type == 'administrative_area_level_2':
+                            # remove "county" from county name
                             county = re_county.sub("", component_value).strip().upper()
                             self.county = county
                         elif component_type == 'neighborhood':
@@ -87,6 +98,12 @@ class GeoCode:
                         elif component_type == 'postal_code':
                             self.zip = component_value
 
+                error_list = self.get_errors()
+                if len(error_list) > 0:
+                    print(error_list)
+                else:
+                    print("OK")
+
     def parse_results(self):
         # get results which should return a single list item
         results = self.geo_data.get('results')
@@ -95,11 +112,24 @@ class GeoCode:
         else:
             return None
 
+    def get_errors(self):
+        errors = []
+        if not self.street_number:
+            errors.append('street_number')
+        if not self.route:
+            errors.append('route')
+        if not self.city:
+            errors.append('city')
+        if not self.zip:
+            errors.append('zip')
+        return errors
+
     def valid_address(self):
-        if self.street_number and self.route and self.city and self.state and self.zip:
-            return True
-        else:
+        error_list = self.get_errors()
+        if len(error_list) > 0:
             return False
+        else:
+            return True
 
     def formatted_address(self):
         if self.valid_address():
@@ -126,6 +156,7 @@ class GeoCode:
                 'county': self.county,
                 'neighborhood': self.neighborhood,
                 'partial_match': self.partial_match,
+                'is_po': self.is_po,
             }
 
     @staticmethod
@@ -142,3 +173,12 @@ class GeoCode:
             return data
         except:
             return None
+
+    @staticmethod
+    def is_pobox(address):
+        re_pobox = re.compile(PO_REGEX, re.IGNORECASE)
+        matches = re_pobox.search(address)
+        if matches:
+            return True
+        else:
+            return False

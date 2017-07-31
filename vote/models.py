@@ -1,11 +1,11 @@
 from django.db import models
-from .states import STATE_LIST
+from vote.states import STATE_LIST
 
 
 class Address(models.Model):
     street_number = models.CharField(max_length=20)
-    route = models.CharField(max_length=100)
-    city = models.CharField(max_length=50, blank=True)
+    route = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
     state = models.CharField(max_length=2, choices=STATE_LIST)
     zip = models.CharField(max_length=12)
 
