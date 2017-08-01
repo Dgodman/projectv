@@ -46,7 +46,9 @@ def is_pobox(address):
 
 
 class GeoCode:
-
+    """
+    Class to get and parse Google's geocode api for USA addresses
+    """
     def __init__(self, address):
         # get geocode data
         data = self.do_geo(address)
