@@ -19,7 +19,7 @@ class AddressType(models.Model):
 
 class Address(models.Model):
     """
-    Model representing an address
+    Model representing an address (Democrat, Republican, Libertarian, Unaffiliated)
     """
     street = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
@@ -37,7 +37,17 @@ class Address(models.Model):
         )
 
     def __str__(self):
-        return self.formatted_address()
+        return self.street
+
+
+class Party(models.Model):
+    """
+    Model representing political parties
+    """
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class UserProfile(models.Model):
@@ -48,8 +58,13 @@ class UserProfile(models.Model):
     first_name = models.CharField(_('first name'), max_length=50, blank=True)
     last_name = models.CharField(_('last name'), max_length=50, blank=True)
     middle_name = models.CharField(_('middle name'), max_length=50, blank=True)
+    suffix_name = models.CharField(_('suffix'), max_length=5, blank=True)
     # postal information
     address = models.ManyToManyField(Address)
+    lived_for_month = models.BooleanField(default=True, blank=True)
+    date_of_move = models.DateField(blank=True)
+    # voter information
+    party = models.ForeignKey('Party', blank=True)
 
     def __str__(self):
         return self.user.email
