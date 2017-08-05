@@ -16,6 +16,10 @@ class AddressType(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        self.name = self.name.upper()
+        super(AddressType, self).save(*args, **kwargs)
+
 
 class Address(models.Model):
     """
@@ -36,6 +40,9 @@ class Address(models.Model):
             self.zip
         )
 
+    class Meta:
+        verbose_name_plural = 'addresses'
+
     def __str__(self):
         return self.street
 
@@ -45,6 +52,9 @@ class Party(models.Model):
     Model representing political parties
     """
     name = models.CharField(max_length=50)
+
+    class Meta:
+        verbose_name_plural = 'parties'
 
     def __str__(self):
         return self.name
