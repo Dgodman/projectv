@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AddressType, Address, Party, UserProfile
+from .models import Address, Party, UserProfile, State
 
 
 @admin.register(Address)
@@ -12,5 +12,5 @@ class UserProfileAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(AddressType)
+admin.site.register(State)
 admin.site.register(Party)

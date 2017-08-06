@@ -51,3 +51,16 @@ STATE_LIST = (
     ('WI', 'Wisconsin'),
     ('WY', 'Wyoming'),
 )
+
+ABSENTEE_TYPES = (
+    ('NONE', 'no absentee ballots'),
+    ('ALL', 'every election'),
+    ('1_YEAR', 'every year'),
+    ('2_YEAR', 'every two years'),
+)
+
+ADDRESS_TYPES = (
+    ('MAILING_1', 'mailing address'),
+    ('MAILING_2', 'other mailing'),
+    ('HOME_1', 'home address'),
+)
