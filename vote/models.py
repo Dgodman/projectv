@@ -1,24 +1,35 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from vote.states import STATE_LIST, ABSENTEE_TYPES, ADDRESS_TYPES
+from vote.states import STATE_LIST, ADDRESS_TYPES
 
 
 STATES_DICT = dict(STATE_LIST)
 
-'''
+
 class AbsenteeType(models.Model):
     """
     Model representing state absentee types (every election, over x time, 1 year, 2 years)
     """
     name = models.CharField(max_length=20)
+    days_prior = models.IntegerField(
+        default=0,
+        help_text="Number of days prior to election when absentee requests can be made"
+    )
+    vote_by_mail = models.BooleanField(default=False, help_text="Allows vote by mail?")
+
+    # initially only doing general elections
+    election_type = models.CharField(max_length=10, default="GENERAL")
 
     class Meta:
         pass
 
     def __str__(self):
         return self.name
-'''
+
+    def save(self, *args, **kwargs):
+        self.name = self.name.upper()
+        super(AbsenteeType, self).save(*args, **kwargs)
 
 
 class State(models.Model):
@@ -27,7 +38,7 @@ class State(models.Model):
     """
     name_short = models.CharField(max_length=2, choices=STATE_LIST, help_text="Enter state abbreviation")
     name_long = models.CharField(max_length=30, help_text="Enter state name")
-    absentee_type = models.CharField(max_length=10, choices=ABSENTEE_TYPES)
+    absentee_type = models.ForeignKey('AbsenteeType')
 
     class Meta:
         pass
@@ -50,7 +61,6 @@ class State(models.Model):
     def save(self, *args, **kwargs):
         super(State, self).save(*args, **kwargs)
 
-
 '''
 class AddressType(models.Model):
     """
@@ -67,7 +77,6 @@ class AddressType(models.Model):
     def save(self, *args, **kwargs):
         self.name = self.name.upper()
         super(AddressType, self).save(*args, **kwargs)
-
 '''
 
 
@@ -80,7 +89,7 @@ class Address(models.Model):
     state = models.ForeignKey('State')
     zip = models.CharField(max_length=12)
     county = models.CharField(max_length=50)
-    type = models.CharField(max_length=20, choices=ADDRESS_TYPES)
+    address_type = models.CharField(max_length=20, choices=ADDRESS_TYPES)
 
     def formatted_address(self):
         return "{0} {1}, {2}, {3}".format(

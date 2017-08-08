@@ -60,7 +60,8 @@ ABSENTEE_TYPES = (
 )
 
 ADDRESS_TYPES = (
-    ('MAILING_1', 'mailing address'),
-    ('MAILING_2', 'other mailing'),
-    ('HOME_1', 'home address'),
+    ('HOME_1', 'Primary home'),
+    ('HOME_2', 'Secondary home'),
+    ('MAILING_1', 'Primary mailing'),
+    ('MAILING_2', 'Secondary mailing'),
 )
