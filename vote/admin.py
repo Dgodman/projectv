@@ -1,6 +1,5 @@
 from django.contrib import admin
-# from .models import Address, Party, UserProfile, State, AbsenteeType, AddressType
-from .models import Address, Party, UserProfile, State, AbsenteeType
+from .models import Address, Party, UserProfile, State, StateRule, StateException
 
 
 @admin.register(Address)
@@ -15,15 +14,17 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(State)
 class StateAdmin(admin.ModelAdmin):
-    list_display = ('name_short', 'absentee_type', )
-    fields = ('name_short', 'absentee_type', )
-    list_filter = ('absentee_type', )
+    pass
 
 
-@admin.register(AbsenteeType)
-class AbsenteeTypeAdmin(admin.ModelAdmin):
-    fields = ('name', 'days_prior', )
+@admin.register(StateRule)
+class StateRuleAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(StateException)
+class StateExceptionAdmin(admin.ModelAdmin):
+    pass
 
 
 admin.site.register(Party)
-# admin.site.register(AddressType)
