@@ -14,7 +14,8 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(State)
 class StateAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name_long', 'can_vote_by_mail', )
+    ordering = ('name_long', )
 
 
 @admin.register(StateRule)

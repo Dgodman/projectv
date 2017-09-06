@@ -34,7 +34,7 @@ class StateException(models.Model):
     Model representing state absentee exceptions
     """
     state = models.ForeignKey('State')
-    name = models.CharField(max_length=20, help_text="Name to be used in form field", default="")
+    name = models.CharField(max_length=20, help_text="'<STATE>_<DESCRIPTION>, ex: GA_ILLNESS", default="")
     description = models.TextField(default="")
 
     class Meta:
@@ -80,7 +80,8 @@ class Address(models.Model):
     """
     street = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
-    state = models.CharField(max_length=2)
+    #state = models.CharField(max_length=2)
+    state = models.ForeignKey(State)
     zip = models.CharField(max_length=12)
     county = models.CharField(max_length=50)
     address_type = models.CharField(max_length=20, choices=ADDRESS_TYPES)
