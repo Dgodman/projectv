@@ -3,6 +3,8 @@ import urllib.request
 import urllib.parse
 import os
 import re
+import base64
+from random import randint
 
 
 GEO_API_URL = "https://maps.googleapis.com/maps/api/geocode/json?"
@@ -184,3 +186,45 @@ class GeoCode:
             return True
         else:
             return False
+
+ENCODE_KEY = 'd$#sbo61#fvq+z(c_6_-7&zf=yo51vwj*3+((a+-6@+d#vwm5_'
+
+
+def random_num(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
+
+
+def encode(clear):
+    key = ENCODE_KEY
+    enc = []
+    for i in range(len(clear)):
+        key_c = key[i % len(key)]
+        enc_c = chr((ord(clear[i]) + ord(key_c)) % 256)
+        enc.append(enc_c)
+    return base64.urlsafe_b64encode("".join(enc).encode('utf-8'))
+
+
+def decode(enc):
+    key = ENCODE_KEY
+    dec = []
+    enc = base64.urlsafe_b64decode(enc)
+    enc = enc.decode('utf-8')
+    for i in range(len(enc)):
+        key_c = key[i % len(key)]
+        dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
+        dec.append(dec_c)
+    return "".join(dec)
+
+
+def encode_test(max_range):
+    # fake last 4 digits of ssn
+    for num in range(1, max_range):
+        # convert to string
+        ssn = str(random_num(4))
+        # encode
+        encoded_ssn = encode(ssn)
+        # decode
+        decoded_ssn = decode(encoded_ssn)
+        print("{0} : {1} : {2}".format(ssn, encoded_ssn, decoded_ssn))

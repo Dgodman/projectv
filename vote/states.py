@@ -52,13 +52,6 @@ STATE_LIST = (
     ('WY', 'Wyoming'),
 )
 
-ABSENTEE_TYPES = (
-    ('NONE', 'no absentee ballots'),
-    ('ALL', 'every election'),
-    ('1_YEAR', 'every year'),
-    ('2_YEAR', 'every two years'),
-)
-
 ADDRESS_TYPES = (
     ('HOME_1', 'Primary home'),
     ('HOME_2', 'Secondary home'),
@@ -188,10 +181,10 @@ STATE_ABSENTEE_TYPE = {
         'absentee': {
             'type': 'ALLOWED_BUT',
             'can_be_permanent': False,
-            'notary_required': True,
             'rules': {
                 'request_available': 'January 1st',
                 'deadline_return': 'Friday before Election Day',
+                'notary_required': True,
             },
             'exceptions': {
                 'temporarily residing outside the State',
@@ -204,10 +197,28 @@ STATE_ABSENTEE_TYPE = {
         },
     },
     'FL': {
-        'absentee_type': 'early'
+        'absentee': {
+            'type': 'ALLOWED',
+            'can_be_permanent': False,
+            'rules': {
+                'request_available': 'January 1st',
+                'deadline_return': 'Before 5 p.m. on the 6th day before Election Day',
+            },
+            'exceptions': {
+            },
+        },
     },
     'GA': {
-        'absentee_type': 'early'
+        'absentee': {
+            'type': 'ALLOWED',
+            'can_be_permanent': False,
+            'rules': {
+                'request_available': '180 days before Election Day',
+                'deadline_return': 'Before 5 p.m. on the 6th day before Election Day',
+            },
+            'exceptions': {
+            },
+        },
     },
     'HI': {
         'absentee_type': 'early'
@@ -276,7 +287,7 @@ STATE_ABSENTEE_TYPE = {
         'absentee_type': 'none'
     },
     'NC': {
-        'absentee': {
+        'absentee_request': {
             'can_vote_by_mail': True,
             'can_be_permanent': False,
             'rules': {
@@ -286,6 +297,9 @@ STATE_ABSENTEE_TYPE = {
             'exceptions': {
                 None,
             },
+        },
+        'absentee_ballot': {
+            'notary_or_witness': "One public notary or two witnesses are required and will need to sign the ballot."
         },
     },
     'ND': {

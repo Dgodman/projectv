@@ -7,38 +7,59 @@ from vote.states import STATE_LIST, ADDRESS_TYPES
 STATES_DICT = dict(STATE_LIST)
 
 
-class AbsenteeType(models.Model):
+class StateRule(models.Model):
     """
-    Model representing state absentee types (every election, over x time, 1 year, 2 years)
+    Model representing state absentee rules
     """
-    name = models.CharField(max_length=20)
-    days_prior = models.IntegerField(
-        default=0,
-        help_text="Number of days prior to election when absentee requests can be made"
-    )
-    vote_by_mail = models.BooleanField(default=False, help_text="Allows vote by mail?")
-
-    # initially only doing general elections
-    election_type = models.CharField(max_length=10, default="GENERAL")
+    state = models.ForeignKey('State')
+    name = models.CharField(max_length=20, help_text="Generic name (may be used in forms)", default="")
+    description = models.TextField(default="")
 
     class Meta:
-        pass
+        verbose_name_plural = 'state rules'
 
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
+    def clean_name(self, *args, **kwargs):
         self.name = self.name.upper()
-        super(AbsenteeType, self).save(*args, **kwargs)
+        super(StateRule, self).clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        super(StateRule, self).save(*args, **kwargs)
+
+
+class StateException(models.Model):
+    """
+    Model representing state absentee exceptions
+    """
+    state = models.ForeignKey('State')
+    name = models.CharField(max_length=20, help_text="'<STATE>_<DESCRIPTION>, ex: GA_ILLNESS", default="")
+    description = models.TextField(default="")
+
+    class Meta:
+        verbose_name_plural = 'state exceptions'
+
+    def __str__(self):
+        return self.name
+
+    def clean_name(self, *args, **kwargs):
+        self.name = self.name.upper()
+        super(StateException, self).clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        super(StateException, self).save(*args, **kwargs)
 
 
 class State(models.Model):
     """
     Model representing state information (name, absentee_allowed, absentee_type,)
     """
-    name_short = models.CharField(max_length=2, choices=STATE_LIST, help_text="Enter state abbreviation")
+    # state names
+    name_short = models.CharField(max_length=2, help_text="Enter state abbreviation")
     name_long = models.CharField(max_length=30, help_text="Enter state name")
-    absentee_type = models.ForeignKey('AbsenteeType')
+    # state absentee info
+    can_vote_by_mail = models.BooleanField(default=False)
 
     class Meta:
         pass
@@ -46,38 +67,11 @@ class State(models.Model):
     def __str__(self):
         return self.name_long
 
-    def get_long(self):
-        return STATES_DICT.get(self.name_short, '')
-
     def clean(self, *args, **kwargs):
-        print("test")
-        short = self.name_short
-        if short:
-            name_long = STATES_DICT[self.name_short]
-            if name_long:
-                self.name_long = name_long
         super(State, self).clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         super(State, self).save(*args, **kwargs)
-
-'''
-class AddressType(models.Model):
-    """
-    Models representing address types (Home, Mailing, other)
-    """
-    name = models.CharField(max_length=20, help_text="Enter an address type")
-
-    class Meta:
-        verbose_name_plural = 'address types'
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        self.name = self.name.upper()
-        super(AddressType, self).save(*args, **kwargs)
-'''
 
 
 class Address(models.Model):
@@ -86,7 +80,8 @@ class Address(models.Model):
     """
     street = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
-    state = models.ForeignKey('State')
+    #state = models.CharField(max_length=2)
+    state = models.ForeignKey(State)
     zip = models.CharField(max_length=12)
     county = models.CharField(max_length=50)
     address_type = models.CharField(max_length=20, choices=ADDRESS_TYPES)
@@ -103,7 +98,7 @@ class Address(models.Model):
         verbose_name_plural = 'addresses'
 
     def __str__(self):
-        return self.street
+        return self.formatted_address()
 
 
 class Party(models.Model):
@@ -123,6 +118,7 @@ class UserProfile(models.Model):
     """
     Model representing the user's profile
     """
+    # voter information
     user = models.OneToOneField(User)
     first_name = models.CharField(_('first name'), max_length=50, blank=True)
     last_name = models.CharField(_('last name'), max_length=50, blank=True)
@@ -132,8 +128,14 @@ class UserProfile(models.Model):
     address = models.ManyToManyField(Address)
     lived_for_month = models.BooleanField(default=True, blank=True)
     date_of_move = models.DateField(blank=True)
-    # voter information
+    # voter party
     party = models.ForeignKey('Party', blank=True)
+    # voter exceptions (based on state)
+    exceptions = models.ManyToManyField(
+        StateException,
+        help_text="Select the absentee exceptions for this user (based on state)",
+        blank=True,
+    )
 
     def __str__(self):
         return self.user.email
